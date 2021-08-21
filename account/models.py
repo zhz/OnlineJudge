@@ -41,6 +41,10 @@ class User(AbstractBaseUser):
     open_api = models.BooleanField(default=False)
     open_api_appkey = models.TextField(null=True)
     is_disabled = models.BooleanField(default=False)
+    # Sigh in
+    last_sighin_time = models.DateField(default="1970-01-01")
+    continue_sighin_days = models.IntegerField(default=0)
+
 
     USERNAME_FIELD = "username"
     REQUIRED_FIELDS = []
@@ -61,6 +65,12 @@ class User(AbstractBaseUser):
 
     def is_contest_admin(self, contest):
         return self.is_authenticated and (contest.created_by == self or self.admin_type == AdminType.SUPER_ADMIN)
+
+    def sighin_time(self):
+        return self.last_sighin_time
+
+    def continue_days(self):
+        return self.continue_sighin_days
 
     class Meta:
         db_table = "user"
